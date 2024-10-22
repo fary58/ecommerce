@@ -50,6 +50,45 @@ const userCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
+  login: async (req, res) => {
+    try {
+      const { email, password } = req.body;
+
+      const user = await Users.findOne({ email });
+      if (!user) return res.status(400).json({ msg: "User does not exist" });
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return res.status(400).json({ msg: "Incorrect Password" });
+
+      const accesstoken = generateAccessToken({ id: user._id });
+      const refreshtoken = createRefreshToken({ id: user._id });
+
+      res.cookie("refreshtoken", refreshtoken, {
+        httpOnly: true,
+        path: "/user/refresh_token",
+      });
+
+      res.json({ accesstoken });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+  logout: async (req, res) => {
+    try {
+      res.clearCookie("refreshtoken", { path: "/user/refresh_token" });
+      return res.json({ msg: "Log Out" });
+    } catch (err) {}
+  },
+  getUser: async (req, res) => {
+    try {
+      const user = await Users.findById(req.user.id).select("-password");
+
+      if (!user) return res.status(400).json({ msg: "User Not Found" });
+      res.json(user);
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 };
 
 function generateAccessToken(payload) {
