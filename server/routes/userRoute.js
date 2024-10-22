@@ -3,7 +3,7 @@ const userCtrl = require("../controllers/userController");
 
 
 router.post("/register", userCtrl.register)
-router.get("/", userCtrl.get)
+// router.get("/", userCtrl.get)
 
 
 
