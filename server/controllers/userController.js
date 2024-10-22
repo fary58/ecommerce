@@ -33,10 +33,23 @@ const userCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
-  //   get: async (req, res) => {
-  //     res.setHeader("Content-Type", "text/plain; charset=utf-8");
-  //     res.end("getFunction called");
-  //   },
+  refreshtoken: async (req, res) => {
+    try {
+      const rf_token = req.cookies.refreshtoken;
+
+      if (!rf_token)
+        return res.status(400).json({ msg: "Please Login or Registers" });
+
+      jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err)
+          return res.status(400).json({ msg: "Please Login or Register" });
+        const accesstoken = generateAccessToken({ id: user.id });
+        res.json({ accesstoken });
+      });
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
 };
 
 function generateAccessToken(payload) {
@@ -44,7 +57,9 @@ function generateAccessToken(payload) {
 }
 
 function createRefreshToken(payload) {
-    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-  }
+  return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
+    expiresIn: "7d",
+  });
+}
 
 module.exports = userCtrl;
