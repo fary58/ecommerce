@@ -1,10 +1,13 @@
 const Users = require("../models/userModel");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userCtrl = {
   register: async (req, res) => {
     try {
       const { name, email, password } = req.body;
       const user = await Users.findOne({ email });
+      const hashPass = await bcrypt.hash(password, 10);
       if (user)
         return res.status(400).json({ msg: "Email Already Registered" });
       if (password.length < 6)
@@ -14,15 +17,18 @@ const userCtrl = {
       const newUser = new Users({
         name,
         email,
-        password,
+        password: hashPass,
       });
       await newUser.save();
-      res.json({
-        status: "success",
-        data: {
-            newUser,
-        },
+      const accesstoken = generateAccessToken({ id: newUser._id });
+      const refreshtoken = createRefreshToken({ id: newUser._id });
+
+      res.cookie("refreshtoken", refreshtoken, {
+        httpOnly: true,
+        path: "/user/refresh_token",
       });
+
+      res.json({ accesstoken });
     } catch (err) {
       return res.status(500).json({ msg: err.message });
     }
@@ -32,5 +38,13 @@ const userCtrl = {
   //     res.end("getFunction called");
   //   },
 };
+
+function generateAccessToken(payload) {
+  return jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: "1d" });
+}
+
+function createRefreshToken(payload) {
+    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+  }
 
 module.exports = userCtrl;
