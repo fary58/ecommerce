@@ -12,6 +12,8 @@ app.use(bodyParser.json());
 connectDB();
 
 app.use("/user", require("./routes/userRoute"));
+app.use('/api',require('./routes/categoryRouter'))
+app.use('/api',require('./routes/productRouter'))
 
 // app.get("/", (req, res) => {
 //   res.send({
