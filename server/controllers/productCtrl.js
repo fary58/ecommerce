@@ -1,11 +1,29 @@
 // const { query } = require('express');
 const Products = require("../models/productModel");
 
+class APIfeatures {
+  constructor(query, queryString) {
+    this.query = query;
+    this.queryString = queryString;
+  }
+
+  sorting() {
+    const queryString = this.queryString;
+    const sort = queryString.sort;
+    if (sort) {
+      this.query = this.query.sort(sort);
+    } else {
+      this.query = this.query.sort("createdAt");
+    }
+    return this;
+  }
+}
+
 const productCtrl = {
   getProducts: async (req, res) => {
     try {
-      const products = Products.find();
-
+      const features = new APIfeatures(Products.find(), req.query).sorting();
+      const products = await features.query;
       res.json(products);
     } catch (err) {
       return res.status(500).json({ msg: err.message });
