@@ -8,13 +8,24 @@ class APIfeatures {
   }
 
   sorting() {
-    const queryString = this.queryString;
-    const sort = queryString.sort;
-    if (sort) {
-      this.query = this.query.sort(sort);
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(",").join("");
+
+      this.query = this.query.sort(sortBy);
+
+    //   console.log(sortBy);
     } else {
-      this.query = this.query.sort("createdAt");
+      this.query = this.query.sort("-createdAt");
     }
+
+    return this;
+  }
+  pagination() {
+    const page = this.queryString.page || 1;
+    const limit = this.queryString.limit || 9;
+    const skip = (this.queryString.page -1) * 9;
+    // console.log(this.queryString.limit);
+    this.query = this.query.skip(skip).limit(limit);
     return this;
   }
 }
@@ -22,7 +33,9 @@ class APIfeatures {
 const productCtrl = {
   getProducts: async (req, res) => {
     try {
-      const features = new APIfeatures(Products.find(), req.query).sorting();
+      const features = new APIfeatures(Products.find(), req.query)
+        .sorting()
+        .pagination();
       const products = await features.query;
       res.json(products);
     } catch (err) {
