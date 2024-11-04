@@ -5,10 +5,13 @@ import axios from "axios";
 
 export const GlobalState = createContext();
 
-export const DataProvider = ({ props }) => {
-    ProductAPI();
-  return (
-    <GlobalState.Provider value={"Global"}>{props.children}</GlobalState.Provider>
-    
-  );
+export const DataProvider = ({ children }) => {
+  const [token, setToken] = useState(false);
+
+  const state = {
+    token: [token, setToken],
+    productsAPI: ProductAPI(),
+  };
+
+  return <GlobalState.Provider value={state}>{children}</GlobalState.Provider>;
 };

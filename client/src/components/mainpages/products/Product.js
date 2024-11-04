@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useContext } from "react";
+import { GlobalState } from "../../../GlobalState";
 
 const Product = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  const state = useContext(GlobalState);
+  console.log(state);
+  return <div className="products"></div>;
+};
 
-export default Product
+export default Product;
