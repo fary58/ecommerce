@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const ProductAPI = () => {
-  const [products, setProducts] = useState([]);
 
-  const getProducts = async () => {
-    const res = await axios.get("/api/products");
-    setProducts(res.data.products);
-  };
+    const [products,setProducts]=useState([])
 
-  useEffect(() => {
-    getProducts();
-  }, []);
+    const getProducts = async()=> {
+        const res = await axios.get('/api/products')
+        setProducts(res.data);
+    }
+
+    useEffect(()=> {
+        getProducts()
+    },[])
 
   return {
-    products: [products, setProducts],
-  };
-};
+    products : [products,setProducts]
+  }
+}
 
-export default ProductAPI;
+export default ProductAPI

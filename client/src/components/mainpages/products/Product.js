@@ -7,9 +7,10 @@ const Product = () => {
   const [products] = state.productsAPI.products;
   return (
     <div className="products">
-      {products.map((product) => {
-        return <ProductList key={product._id} product={product} />;
-      })}
+      {products &&
+        products.map((product) => (
+          <ProductList key={product._id} product={product} />
+        ))}
     </div>
   );
 };
