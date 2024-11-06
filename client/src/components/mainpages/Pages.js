@@ -4,7 +4,7 @@ import Login from './login/Login'
 import Register from './login/Register'
 import Cart from './cart/Cart'
 import { Route, Routes } from 'react-router-dom'
-// import DetailProduct from './utils/DetailProducts/DetailProduct'
+import DetailProduct from './utils/DetailedProducts/DetailProduct'
 
 const Pages = () => {
   return (
@@ -13,7 +13,7 @@ const Pages = () => {
       <Route path='/login' element={<Login/>} />
       <Route path='/register' element={<Register/>}/>
       <Route path='/cart' element={<Cart/>}/>
-      {/* <Route path='/detail/:id' element={<DetailProduct/>} /> */}
+      <Route path='/detail/:id' element={<DetailProduct/>} />
       <Route path='/cart' element={<Cart/>}/> 
     </Routes>
   )
