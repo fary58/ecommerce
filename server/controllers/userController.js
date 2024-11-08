@@ -22,10 +22,13 @@ const userCtrl = {
       await newUser.save();
       const accesstoken = generateAccessToken({ id: newUser._id });
       const refreshtoken = createRefreshToken({ id: newUser._id });
+      console.log(res);
 
       res.cookie("refreshtoken", refreshtoken, {
         httpOnly: true,
         path: "/user/refresh_token",
+        sameSite: "Lax", // Allow cross-origin cookies
+        secure: false, // Set to `true` in production (when using HTTPS)
       });
 
       res.json({ accesstoken });
@@ -43,7 +46,7 @@ const userCtrl = {
       jwt.verify(rf_token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err)
           return res.status(400).json({ msg: "Please Login or Register" });
-        const accesstoken = generateAccessToken({ id: user.id });
+        const accesstoken = createAccessToken({ id: user.id });
         res.json({ accesstoken });
       });
     } catch (err) {
@@ -53,7 +56,6 @@ const userCtrl = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
-
       const user = await Users.findOne({ email });
       if (!user) return res.status(400).json({ msg: "User does not exist" });
 
@@ -61,15 +63,15 @@ const userCtrl = {
       if (!isMatch) return res.status(400).json({ msg: "Incorrect Password" });
 
       const accesstoken = generateAccessToken({ id: user._id });
-      const refreshtoken = createRefreshToken({ id: user._id });
+      // const refreshtoken = createRefreshToken({ id: user._id });
 
-      res.cookie("refreshtoken", refreshtoken, {
-        httpOnly: true,
-        path: "/user/refresh_token",
-      });
+      // res.cookie("refreshtoken", refreshtoken, {
+      //   path: "/user/refresh_token",
+      // });
 
       res.json({ accesstoken });
     } catch (err) {
+      // console.log(err);
       return res.status(500).json({ msg: err.message });
     }
   },

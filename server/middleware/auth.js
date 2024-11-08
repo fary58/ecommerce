@@ -6,9 +6,10 @@ const auth = (req,res,next) => {
         console.log(token)
         if(!token) return res.status(400).json({msg:"Invalid Authentication"})
 
-        jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
+        jwt.verify(token,process.env.TOKEN_SECRET,(err,user)=>{
+            console.log(err);
             if(err) return res.status(400).json({msg:"Invalid Authentication"})
-
+ 
             req.user = user
             next()
             
