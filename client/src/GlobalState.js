@@ -2,6 +2,7 @@ import { createContext, useEffect } from "react";
 import ProductAPI from "./api/ProductAPI";
 import { useState } from "react";
 import axios from "axios";
+import UserAPI from "./api/UserAPI";
 
 export const GlobalState = createContext()
 
@@ -23,6 +24,7 @@ export const DataProvider = ({children}) => {
     const state = {
         token: [token,setToken],
         productsAPI:ProductAPI(),
+        userAPI:UserAPI(token)
     }
 
     return(
