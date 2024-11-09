@@ -18,7 +18,7 @@ const UserAPI = () => {
                     setIsLogged(true);
                     res.data.role === 1 ? setIsAdmin(true) : setIsAdmin(false);
 
-                    console.log(res);
+                    // console.log(res);
                 } catch (err) {
                     alert(err.response.data.msg);
                 }
@@ -28,9 +28,10 @@ const UserAPI = () => {
     }, [token]);
 
     const addCart = (product) => {
+        console.log(product);
         if (!isLogged) return alert("Please log in first.");
 
-        const check = cart.every(item => item.id !== product._id);
+        const check = cart.every(item => item.product._id !== product._id);
 
         if (check) {
             setCart([...cart, { ...product, quantity: 1 }]);
