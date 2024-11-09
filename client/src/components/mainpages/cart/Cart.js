@@ -14,7 +14,7 @@ const Cart = () => {
     <div>
       {cart.map(product => (
         <div className='detail'>
-      <img src={product.product.images.url} alt=''/>
+      <img src={product.product.images} alt=''/>
       <div className='box-detail'>
         <div className='row'>
             <h2>{product.product.title}</h2>
